@@ -136,7 +136,8 @@ struct ContentView: View {
 
     private var notesPanelHeight: CGFloat {
         let visibleRows = min(store.filteredNotes.count, 4)
-        return CGFloat(112 + max(visibleRows, 1) * 62 + 12)
+        let pinnedHeader = store.filteredNotes.contains(where: \.isPinned) ? 42 : 0
+        return CGFloat(112 + pinnedHeader + max(visibleRows, 1) * 62 + 12)
     }
 
     private func closeNotes() {
@@ -173,6 +174,9 @@ private struct NotesPanel: View {
     var searchFocused: FocusState<Bool>.Binding
     let onSelect: () -> Void
 
+    private var pinnedNotes: [Note] { store.filteredNotes.filter(\.isPinned) }
+    private var regularNotes: [Note] { store.filteredNotes.filter { !$0.isPinned } }
+
     var body: some View {
         VStack(spacing: 0) {
             HStack(spacing: 9) {
@@ -192,17 +196,6 @@ private struct NotesPanel: View {
 
             Divider().opacity(0.45)
 
-            HStack {
-                Text("Notes").fontWeight(.semibold)
-                Spacer()
-                Text("\(store.filteredNotes.count)/\(store.notes.count) Notes")
-                    .foregroundStyle(.secondary)
-                Image(systemName: "info.circle").foregroundStyle(.secondary)
-            }
-            .font(.system(size: 13.5))
-            .padding(.horizontal, 18)
-            .frame(height: 54)
-
             if store.filteredNotes.isEmpty {
                 VStack(spacing: 8) {
                     Spacer()
@@ -213,18 +206,13 @@ private struct NotesPanel: View {
             } else {
                 ScrollView {
                     LazyVStack(spacing: 4) {
-                        ForEach(store.filteredNotes) { note in
-                            PanelNoteRow(
-                                note: note,
-                                isCurrent: store.selection == note.id,
-                                onSelect: {
-                                    store.select(note.id)
-                                    onSelect()
-                                },
-                                onPin: { store.togglePin(note.id) },
-                                onDelete: { store.delete(note.id) }
-                            )
+                        if !pinnedNotes.isEmpty {
+                            sectionHeader("Pinned")
+                            ForEach(pinnedNotes) { note in noteRow(note) }
                         }
+
+                        notesHeader
+                        ForEach(regularNotes) { note in noteRow(note) }
                     }
                     .padding(.horizontal, 12)
                     .padding(.bottom, 12)
@@ -238,6 +226,43 @@ private struct NotesPanel: View {
         )
         .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
     }
+
+    private func sectionHeader(_ title: String) -> some View {
+        HStack {
+            Text(title).fontWeight(.semibold)
+            Spacer()
+        }
+        .font(.system(size: 13.5))
+        .foregroundStyle(.secondary)
+        .padding(.horizontal, 6)
+        .frame(height: 42)
+    }
+
+    private var notesHeader: some View {
+        HStack {
+            Text("Notes").fontWeight(.semibold)
+            Spacer()
+            Text("\(store.filteredNotes.count)/\(store.notes.count) Notes")
+                .foregroundStyle(.secondary)
+            Image(systemName: "info.circle").foregroundStyle(.secondary)
+        }
+        .font(.system(size: 13.5))
+        .padding(.horizontal, 6)
+        .frame(height: 42)
+    }
+
+    private func noteRow(_ note: Note) -> some View {
+        PanelNoteRow(
+            note: note,
+            isCurrent: store.selection == note.id,
+            onSelect: {
+                store.select(note.id)
+                onSelect()
+            },
+            onPin: { store.togglePin(note.id) },
+            onDelete: { store.delete(note.id) }
+        )
+    }
 }
 
 private struct PanelNoteRow: View {
@@ -246,6 +271,7 @@ private struct PanelNoteRow: View {
     let onSelect: () -> Void
     let onPin: () -> Void
     let onDelete: () -> Void
+    @State private var isHovered = false
 
     var body: some View {
         HStack(spacing: 10) {
@@ -267,22 +293,28 @@ private struct PanelNoteRow: View {
                 .foregroundStyle(.secondary)
             }
             Spacer(minLength: 8)
-            if isCurrent {
-                Button(action: onPin) { Image(systemName: note.isPinned ? "pin.fill" : "pin") }
+            if isCurrent || isHovered {
+                Button(action: onPin) { Image(systemName: note.isPinned ? "pin.slash" : "pin") }
                     .buttonStyle(.plain)
                     .help(note.isPinned ? "Unpin" : "Pin")
                 Button(action: onDelete) { Image(systemName: "trash") }
                     .buttonStyle(.plain)
                     .help("Delete")
-            } else if note.isPinned {
-                Image(systemName: "pin.fill").foregroundStyle(.secondary)
             }
         }
-        .foregroundStyle(isCurrent ? .primary : .secondary)
+        .foregroundStyle(isCurrent || isHovered ? .primary : .secondary)
         .padding(.horizontal, 12)
         .frame(height: 62)
-        .background(isCurrent ? Color.primary.opacity(0.10) : .clear, in: RoundedRectangle(cornerRadius: 14))
+        .background(
+            isCurrent || isHovered ? Color.primary.opacity(0.10) : .clear,
+            in: RoundedRectangle(cornerRadius: 14)
+        )
         .contentShape(Rectangle())
         .onTapGesture(perform: onSelect)
+        .onHover { hovering in
+            withAnimation(.easeOut(duration: 0.10)) {
+                isHovered = hovering
+            }
+        }
     }
 }
