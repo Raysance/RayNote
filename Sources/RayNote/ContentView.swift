@@ -17,6 +17,9 @@ struct ContentView: View {
                 Color.black.opacity(0.001)
                     .contentShape(Rectangle())
                     .onTapGesture { closeNotes() }
+                    .onContinuousHover { phase in
+                        if case .active = phase { NSCursor.arrow.set() }
+                    }
 
                 NotesPanel(store: store, searchFocused: $searchFocused) {
                     closeNotes()
@@ -26,6 +29,9 @@ struct ContentView: View {
                 .padding(.horizontal, 16)
                 .padding(.top, 58)
                 .padding(.bottom, 16)
+                .onContinuousHover { phase in
+                    if case .active = phase { NSCursor.arrow.set() }
+                }
                 .transition(
                     .asymmetric(
                         insertion: .opacity.combined(with: .scale(scale: 0.97, anchor: .top)),
@@ -40,6 +46,7 @@ struct ContentView: View {
         .background(WindowBlurView().ignoresSafeArea())
         .onChange(of: searchFocusRequest) { _ in
             withAnimation(.easeOut(duration: 0.14)) { showingNotes = true }
+            NSCursor.arrow.set()
             DispatchQueue.main.async { searchFocused = true }
         }
         .onChange(of: editorFocusRequest) { _ in focusEditor() }
@@ -104,7 +111,10 @@ struct ContentView: View {
                 Spacer()
                 Button {
                     withAnimation(.easeInOut(duration: 0.16)) { showingNotes.toggle() }
-                    if showingNotes { DispatchQueue.main.async { searchFocused = true } }
+                    if showingNotes {
+                        NSCursor.arrow.set()
+                        DispatchQueue.main.async { searchFocused = true }
+                    }
                 } label: {
                     Image(systemName: showingNotes ? "list.bullet.rectangle.fill" : "list.bullet.rectangle")
                         .font(.system(size: 19, weight: .medium))
@@ -313,6 +323,7 @@ private struct PanelNoteRow: View {
         .contentShape(Rectangle())
         .onTapGesture(perform: onSelect)
         .onHover { hovering in
+            if hovering { NSCursor.arrow.set() }
             withAnimation(.easeOut(duration: 0.10)) {
                 isHovered = hovering
             }
@@ -339,6 +350,7 @@ private struct RowActionButton: View {
         }
         .buttonStyle(.plain)
         .onHover { hovering in
+            if hovering { NSCursor.arrow.set() }
             withAnimation(.easeOut(duration: 0.10)) {
                 isHovered = hovering
             }
