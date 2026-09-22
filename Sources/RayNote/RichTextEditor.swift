@@ -8,6 +8,7 @@ extension Notification.Name {
     static let rayNoteUnderline = Notification.Name("RayNote.underline")
     static let rayNoteLarger = Notification.Name("RayNote.larger")
     static let rayNoteSmaller = Notification.Name("RayNote.smaller")
+    static let rayNoteRequestDelete = Notification.Name("RayNote.requestDelete")
 }
 
 struct RichTextEditor: NSViewRepresentable {

@@ -7,6 +7,7 @@ struct ContentView: View {
     let editorFocusRequest: Int
 
     @State private var showingNotes = false
+    @State private var notePendingDeletion: Note?
     @FocusState private var searchFocused: Bool
 
     var body: some View {
@@ -21,10 +22,15 @@ struct ContentView: View {
                         if case .active = phase { NSCursor.arrow.set() }
                     }
 
-                NotesPanel(store: store, searchFocused: $searchFocused) {
-                    closeNotes()
-                    focusEditor()
-                }
+                NotesPanel(
+                    store: store,
+                    searchFocused: $searchFocused,
+                    onSelect: {
+                        closeNotes()
+                        focusEditor()
+                    },
+                    onRequestDelete: { notePendingDeletion = $0 }
+                )
                 .frame(maxWidth: 500, maxHeight: notesPanelHeight)
                 .padding(.horizontal, 16)
                 .padding(.top, 58)
@@ -41,7 +47,7 @@ struct ContentView: View {
                 .shadow(color: .black.opacity(0.34), radius: 28, y: 16)
             }
         }
-        .frame(minWidth: 420, minHeight: 320)
+        .frame(minWidth: 420, maxWidth: .infinity, minHeight: 320, maxHeight: .infinity)
         .ignoresSafeArea(.container, edges: .top)
         .background(WindowBlurView().ignoresSafeArea())
         .onChange(of: searchFocusRequest) { _ in
@@ -50,6 +56,18 @@ struct ContentView: View {
             DispatchQueue.main.async { searchFocused = true }
         }
         .onChange(of: editorFocusRequest) { _ in focusEditor() }
+        .onReceive(NotificationCenter.default.publisher(for: .rayNoteRequestDelete)) { _ in
+            notePendingDeletion = store.selectedNote
+        }
+        .alert("Delete Note?", isPresented: deleteAlertPresented) {
+            Button("Cancel", role: .cancel) { notePendingDeletion = nil }
+            Button("Delete", role: .destructive) {
+                if let note = notePendingDeletion { store.delete(note.id) }
+                notePendingDeletion = nil
+            }
+        } message: {
+            Text("This will permanently delete “\(notePendingDeletion?.displayTitle ?? "this note")”.")
+        }
     }
 
     @ViewBuilder
@@ -96,7 +114,15 @@ struct ContentView: View {
                 Button("Create Note") { createNote() }
                 Spacer()
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
+    }
+
+    private var deleteAlertPresented: Binding<Bool> {
+        Binding(
+            get: { notePendingDeletion != nil },
+            set: { if !$0 { notePendingDeletion = nil } }
+        )
     }
 
     private func header(_ note: Note) -> some View {
@@ -183,6 +209,7 @@ private struct NotesPanel: View {
     @ObservedObject var store: NoteStore
     var searchFocused: FocusState<Bool>.Binding
     let onSelect: () -> Void
+    let onRequestDelete: (Note) -> Void
 
     private var pinnedNotes: [Note] { store.filteredNotes.filter(\.isPinned) }
     private var regularNotes: [Note] { store.filteredNotes.filter { !$0.isPinned } }
@@ -270,7 +297,7 @@ private struct NotesPanel: View {
                 onSelect()
             },
             onPin: { store.togglePin(note.id) },
-            onDelete: { store.delete(note.id) }
+            onDelete: { onRequestDelete(note) }
         )
     }
 }
