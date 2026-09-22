@@ -294,11 +294,12 @@ private struct PanelNoteRow: View {
             }
             Spacer(minLength: 8)
             if isCurrent || isHovered {
-                Button(action: onPin) { Image(systemName: note.isPinned ? "pin.slash" : "pin") }
-                    .buttonStyle(.plain)
+                RowActionButton(
+                    systemName: note.isPinned ? "pin.slash" : "pin",
+                    action: onPin
+                )
                     .help(note.isPinned ? "Unpin" : "Pin")
-                Button(action: onDelete) { Image(systemName: "trash") }
-                    .buttonStyle(.plain)
+                RowActionButton(systemName: "trash", action: onDelete)
                     .help("Delete")
             }
         }
@@ -311,6 +312,32 @@ private struct PanelNoteRow: View {
         )
         .contentShape(Rectangle())
         .onTapGesture(perform: onSelect)
+        .onHover { hovering in
+            withAnimation(.easeOut(duration: 0.10)) {
+                isHovered = hovering
+            }
+        }
+    }
+}
+
+private struct RowActionButton: View {
+    let systemName: String
+    let action: () -> Void
+    @State private var isHovered = false
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: systemName)
+                .font(.system(size: 15, weight: .medium))
+                .foregroundStyle(isHovered ? .primary : .secondary)
+                .frame(width: 30, height: 30)
+                .background(
+                    Circle()
+                        .fill(isHovered ? Color.primary.opacity(0.10) : .clear)
+                )
+                .contentShape(Circle())
+        }
+        .buttonStyle(.plain)
         .onHover { hovering in
             withAnimation(.easeOut(duration: 0.10)) {
                 isHovered = hovering
