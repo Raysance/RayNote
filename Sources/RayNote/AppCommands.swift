@@ -30,7 +30,7 @@ struct AppCommands: Commands {
                 .keyboardShortcut(.downArrow, modifiers: [.command, .option])
             Divider()
             Button("Delete Note") {
-                if let id = store.selection { store.delete(id) }
+                post(.rayNoteRequestDelete)
             }
             .keyboardShortcut(.delete, modifiers: [.command, .shift])
         }
