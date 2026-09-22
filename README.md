@@ -64,6 +64,14 @@ Notes are stored locally at:
 ~/Library/Application Support/RayNote/notes.json
 ```
 
+RayNote also keeps a current mirror and the 20 most recent historical snapshots in:
+
+```text
+~/Library/Application Support/RayNote/Backups/
+```
+
+If the primary file cannot be decoded at launch, RayNote automatically restores the newest valid backup.
+
 RayNote does not include sync, analytics, accounts, or network services.
 
 ## Project structure
