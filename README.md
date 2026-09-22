@@ -37,3 +37,5 @@
 ```
 
 恢复或换机时，退出应用，将完整备份放回同一路径，再打开 RayNote。
+
+应用还会自动保存当前镜像和最近 20 份历史备份，位于 `~/Library/Application Support/RayNote/Backups/`。

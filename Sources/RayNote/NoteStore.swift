@@ -8,6 +8,15 @@ final class NoteStore: ObservableObject {
 
     private let fileURL: URL
     private var saveTask: Task<Void, Never>?
+    private let maximumHistoricalBackups = 20
+
+    private var backupDirectory: URL {
+        fileURL.deletingLastPathComponent().appendingPathComponent("Backups", isDirectory: true)
+    }
+
+    private var latestBackupURL: URL {
+        backupDirectory.appendingPathComponent("latest.json")
+    }
 
     init(fileURL: URL? = nil) {
         if let fileURL {
@@ -89,16 +98,41 @@ final class NoteStore: ObservableObject {
     }
 
     private func load() {
-        do {
-            let data = try Data(contentsOf: fileURL)
-            notes = try JSONDecoder().decode([Note].self, from: data)
-        } catch {
+        let candidates = [fileURL, latestBackupURL] + historicalBackupURLs()
+        var recoveredData: Data?
+        var loadedData: Data?
+
+        for candidate in candidates {
+            guard let data = try? Data(contentsOf: candidate),
+                  let decoded = try? JSONDecoder().decode([Note].self, from: data) else { continue }
+            notes = decoded
+            loadedData = data
+            recoveredData = candidate == fileURL ? nil : data
+            break
+        }
+
+        if notes.isEmpty && candidates.allSatisfy({ !FileManager.default.fileExists(atPath: $0.path) }) {
             notes = [
                 Note(
                     title: "Welcome to RayNote",
                     body: "A fast place for thoughts\n\nRayNote is designed around the keyboard.\n\n⌘ N  New note\n⌘ F  Search notes\n⌘ B  Bold\n⌘ I  Italic\n⌘ U  Underline\n⌘ +/−  Text size\n\nYour notes stay on this Mac."
                 )
             ]
+        }
+
+        if let loadedData {
+            try? FileManager.default.createDirectory(
+                at: fileURL.deletingLastPathComponent(),
+                withIntermediateDirectories: true
+            )
+            try? FileManager.default.createDirectory(
+                at: backupDirectory,
+                withIntermediateDirectories: true
+            )
+            try? loadedData.write(to: latestBackupURL, options: .atomic)
+            if let recoveredData {
+                try? recoveredData.write(to: fileURL, options: .atomic)
+            }
         }
         selection = notes.sorted { $0.updatedAt > $1.updatedAt }.first?.id
     }
@@ -114,15 +148,52 @@ final class NoteStore: ObservableObject {
 
     private func save() {
         do {
-            try FileManager.default.createDirectory(
-                at: fileURL.deletingLastPathComponent(),
-                withIntermediateDirectories: true
-            )
+            let fileManager = FileManager.default
+            try fileManager.createDirectory(at: fileURL.deletingLastPathComponent(), withIntermediateDirectories: true)
+            try fileManager.createDirectory(at: backupDirectory, withIntermediateDirectories: true)
+
             let encoder = JSONEncoder()
             encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
-            try encoder.encode(notes).write(to: fileURL, options: .atomic)
+            let newData = try encoder.encode(notes)
+
+            if let previousData = try? Data(contentsOf: fileURL),
+               previousData != newData,
+               (try? JSONDecoder().decode([Note].self, from: previousData)) != nil {
+                let timestamp = Int(Date().timeIntervalSince1970 * 1_000)
+                let snapshotURL = backupDirectory.appendingPathComponent(
+                    "notes-\(timestamp)-\(UUID().uuidString.prefix(8)).json"
+                )
+                try previousData.write(to: snapshotURL, options: .atomic)
+            }
+
+            try newData.write(to: fileURL, options: .atomic)
+            try newData.write(to: latestBackupURL, options: .atomic)
+            pruneHistoricalBackups()
         } catch {
             assertionFailure("Could not save notes: \(error)")
+        }
+    }
+
+    private func historicalBackupURLs() -> [URL] {
+        let keys: Set<URLResourceKey> = [.contentModificationDateKey, .isRegularFileKey]
+        guard let files = try? FileManager.default.contentsOfDirectory(
+            at: backupDirectory,
+            includingPropertiesForKeys: Array(keys),
+            options: [.skipsHiddenFiles]
+        ) else { return [] }
+
+        return files
+            .filter { $0.lastPathComponent.hasPrefix("notes-") && $0.pathExtension == "json" }
+            .sorted {
+                let left = try? $0.resourceValues(forKeys: keys).contentModificationDate
+                let right = try? $1.resourceValues(forKeys: keys).contentModificationDate
+                return (left ?? .distantPast) > (right ?? .distantPast)
+            }
+    }
+
+    private func pruneHistoricalBackups() {
+        for expiredBackup in historicalBackupURLs().dropFirst(maximumHistoricalBackups) {
+            try? FileManager.default.removeItem(at: expiredBackup)
         }
     }
 }
