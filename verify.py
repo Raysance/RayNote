@@ -7,6 +7,7 @@ from pathlib import Path
 import plistlib
 import struct
 import subprocess
+from dependency_isolation import verify_isolation
 
 ROOT = Path(__file__).resolve().parent
 
@@ -53,6 +54,8 @@ def main():
         assert restored[relative:relative + len(after)] == after
         restored[relative:relative + len(before)] = before
     assert restored == original[position:position + length], 'Unexpected native code changes'
+    isolated = verify_isolation(original, core)
+    assert not (args.app / 'Contents/Frameworks').exists(), 'Unexpected bundled framework directory'
     resources = args.app / 'Contents/Resources'
     resource_manifest = json.loads((resources / 'ResourceManifest.json').read_text())
     for removed in resource_manifest['removed_resources']:
@@ -94,6 +97,7 @@ def main():
         'catalog_bytes_before': resource_manifest['catalog_before_bytes'],
         'catalog_bytes_after': resource_manifest['catalog_after_bytes'],
         'removed_resource_entries_verified': len(resource_manifest['removed_resources']),
+        'framework_isolation': isolated,
     }, indent=2))
 
 

@@ -1,0 +1,85 @@
+{
+  "source_sha256": "c8ff6219fa4122ca35c646fa23638a219c69abcc6d2db81bf6931a92cbec1e95",
+  "native": {
+    "scope": "Known Notes controllers/actions/model/find, recovery, repository and sync-provider intervals, plus explicit host bootstrap calls and original application/delegate initializers. Direct branches and local chained-import materializations only.",
+    "whole_program_dependency_proof": false,
+    "limitations": [
+      "Indirect dispatch and callbacks are counted but not resolved.",
+      "Metadata/vtable edges and all computed addresses are not exhaustively modeled.",
+      "This analysis does not cover the full original launcher feature set."
+    ],
+    "root_intervals": [
+      [
+        "0x100a49000",
+        "0x100aade00"
+      ],
+      [
+        "0x100308220",
+        "0x100309130"
+      ],
+      [
+        "0x1015a0000",
+        "0x1015ae000"
+      ],
+      [
+        "0x10110f91c",
+        "0x10110fd9c"
+      ]
+    ],
+    "root_functions": 1763,
+    "resolved_stub_count": 3511,
+    "stub_count": 3511,
+    "bound_pointer_slots": 54865,
+    "all_function_starts": 167612,
+    "reachable_functions_by_direct_branches": 6240,
+    "encountered_indirect_calls_or_branches": 6110,
+    "direct_root_foreign_refs": [],
+    "transitive_direct_foreign_refs": [],
+    "foreign_imports": {
+      "@rpath/SplineRuntime.framework/Versions/A/SplineRuntime": 7,
+      "@rpath/SoulverCore.framework/Versions/A/SoulverCore": 448
+    }
+  },
+  "editor": {
+    "entry": "index.html",
+    "static_files": [
+      {
+        "path": "css/index.css",
+        "sha256": "738f4088de1e5ea1a7ba400dcde58b2a6c379eb149d5fc62c14add8724ad9f45"
+      },
+      {
+        "path": "fonts/InterVariable-Italic.woff2",
+        "sha256": "0470791f15efd2987bdb50b24027c3f584a2cf9b7b63fbf86012c5f2e9abcc05"
+      },
+      {
+        "path": "fonts/InterVariable.woff2",
+        "sha256": "8af7bd5b545567adffb3dfceb5bedb353a522d7bf1b3a2b8af7b6064156babc0"
+      },
+      {
+        "path": "fonts/JetBrainsMono-Italic.woff2",
+        "sha256": "76a805b6ea613ce2e3973f1bac6fa29db23116b2881390b59247d22890844ecc"
+      },
+      {
+        "path": "fonts/JetBrainsMono.woff2",
+        "sha256": "31ec365b93e4bad6f202ce23352a56d01ca4462b2afc782ed2cf6fa42ca9ac0e"
+      },
+      {
+        "path": "index.html",
+        "sha256": "d60687603e5fbf8063d9aacc73f225f765b2352faba12c1e4a171984ce7b881c"
+      },
+      {
+        "path": "js/index.js",
+        "sha256": "f75ea6798129a56a01f8115ba323acd6c3ef59d45a38a388ea074a614c36ee2b"
+      }
+    ],
+    "es_module_imports": [],
+    "module_preload_links": [],
+    "embedded_highlighter": {
+      "Highlight.js_marker": true,
+      "highlightAuto_marker": true
+    },
+    "scope": "HTML script/style links, CSS URLs, and V8-parsed static ESM imports. Runtime WebKit bridge calls and computed resource requests remain outside this static closure."
+  },
+  "interpretation": "Static evidence supports Notes-only isolation; runtime load/UI/export/restart tests are separate required evidence. Zero references here is not an absolute absence proof."
+}
+

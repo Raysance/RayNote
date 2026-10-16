@@ -5,12 +5,7 @@ import shutil
 import subprocess
 import tempfile
 
-PACKAGES = {
-    'RaycastWeb_RaycastWeb.bundle',
-    'raycast-syntax_RaycastSyntax.bundle',
-    'MathJaxSwift_MathJaxSwift.bundle',
-    'raycast-grdb_GRDB.bundle',
-}
+PACKAGES = {'RaycastWeb_RaycastWeb.bundle'}
 GLYPHS = '''raycast-notes raycast-notes-create raycast-notes-save raycast-notes-search
 floating-notes-export floating-notes-extension floating-notes-heading-dropdown
 notes-status-item plus minus duplicate app-window-list magnifying-glass copy-clipboard
@@ -31,32 +26,34 @@ def size(path):
     return sum(f.stat().st_size for f in path.rglob('*') if f.is_file() and not f.is_symlink())
 
 
-def prune(resources):
-    resources = Path(resources)
-    before = size(resources)
+def prune(source, resources):
+    source, resources = Path(source), Path(resources)
+    resources.mkdir(parents=True)
+    before = size(source)
     removed = []
-    for path in resources.iterdir():
-        keep = (path.name in PACKAGES or path.name in {'Assets.car', 'emoji.json'}
-                or (path.suffix in {'.otf', '.ttf'} and path.name != 'AppleGaramond-Light.ttf'))
+    for path in source.iterdir():
+        keep = path.name in PACKAGES or path.name in {'Assets.car', 'emoji.json'}
         if not keep:
             removed.append({'path': path.name, 'bytes': size(path)})
+        elif path.name != 'Assets.car':
             if path.is_dir():
-                shutil.rmtree(path)
+                shutil.copytree(path, resources / path.name, symlinks=True)
             else:
-                path.unlink()
+                shutil.copy2(path, resources / path.name)
     catalog = resources / 'Assets.car'
-    metadata = json.loads(subprocess.check_output(['assetutil', '--info', catalog]))
+    original_catalog = source / 'Assets.car'
+    metadata = json.loads(subprocess.check_output(['assetutil', '--info', original_catalog]))
     available = {item.get('Name') for item in metadata}
     names = sorted({name + '-16' for name in GLYPHS} | {'floating-notes-system-theme'})
     assert set(names) <= available, 'Required Notes glyph missing from source catalog'
     # This assetutil build silently truncates a preserve list around 1024 bytes.
     # Stay below that limit and verify every requested name in the resulting CAR.
     assert len(','.join(names).encode()) < 1000
-    old_catalog_size = catalog.stat().st_size
+    old_catalog_size = original_catalog.stat().st_size
     with tempfile.TemporaryDirectory(prefix='raynote-assets-') as folder:
         output = Path(folder) / 'Assets.car'
         subprocess.run(['assetutil', '--preserve-assets-named', ','.join(names),
-                        '--output', output, catalog], check=True)
+                        '--output', output, original_catalog], check=True)
         shutil.copy2(output, catalog)
     retained = json.loads(subprocess.check_output(['assetutil', '--info', catalog]))
     actual_names = {item.get('Name') for item in retained}

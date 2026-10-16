@@ -1,14 +1,22 @@
 {
   "before_bytes": 62364021,
-  "after_bytes": 15637691,
+  "after_bytes": 3331663,
   "removed_resources": [
     {
       "path": "RaycastNodeExtensions_RaycastNodeExtensions.bundle",
       "bytes": 3608930
     },
     {
+      "path": "Inter-Bold.otf",
+      "bytes": 626056
+    },
+    {
       "path": "Starscream_Starscream.bundle",
       "bytes": 1534
+    },
+    {
+      "path": "Inter-Regular.otf",
+      "bytes": 605092
     },
     {
       "path": "symlinks.plist",
@@ -19,8 +27,24 @@
       "bytes": 6104
     },
     {
+      "path": "JetBrainsMono-Bold.ttf",
+      "bytes": 277828
+    },
+    {
+      "path": "JetBrainsMono-Italic.ttf",
+      "bytes": 276840
+    },
+    {
       "path": "AppIcon-Release.icns",
       "bytes": 86911
+    },
+    {
+      "path": "Inter-SemiBoldItalic.otf",
+      "bytes": 602496
+    },
+    {
+      "path": "JetBrainsMono-Regular.ttf",
+      "bytes": 273900
     },
     {
       "path": "dict-modern-success.aif",
@@ -31,8 +55,16 @@
       "bytes": 3718
     },
     {
+      "path": "Inter-Light.otf",
+      "bytes": 607704
+    },
+    {
       "path": "dict-modern-failure.aif",
       "bytes": 93314
+    },
+    {
+      "path": "raycast-grdb_GRDB.bundle",
+      "bytes": 1517
     },
     {
       "path": "InternetAccessPolicy.plist",
@@ -47,12 +79,40 @@
       "bytes": 238528
     },
     {
+      "path": "MathJaxSwift_MathJaxSwift.bundle",
+      "bytes": 3523597
+    },
+    {
+      "path": "Inter-Medium.otf",
+      "bytes": 622088
+    },
+    {
       "path": "dict-cyber-start.aif",
       "bytes": 31138
     },
     {
+      "path": "raycast-syntax_RaycastSyntax.bundle",
+      "bytes": 1633386
+    },
+    {
       "path": "Base.lproj",
       "bytes": 13187
+    },
+    {
+      "path": "GeistMono-Medium.ttf",
+      "bytes": 78292
+    },
+    {
+      "path": "Inter-SemiBold.otf",
+      "bytes": 624244
+    },
+    {
+      "path": "Inter-MediumItalic.otf",
+      "bytes": 599652
+    },
+    {
+      "path": "JetBrainsMonoNL-Regular.ttf",
+      "bytes": 208576
     },
     {
       "path": "PostHog_PostHog.bundle",
@@ -61,6 +121,10 @@
     {
       "path": "dict-cyber-failure.aif",
       "bytes": 52616
+    },
+    {
+      "path": "Inter-Italic.otf",
+      "bytes": 586752
     },
     {
       "path": "dict-retro-failure.aif",
@@ -83,8 +147,20 @@
       "bytes": 47824
     },
     {
+      "path": "Inter-BoldItalic.otf",
+      "bytes": 604316
+    },
+    {
       "path": "dict-modern-start.aif",
       "bytes": 67786
+    },
+    {
+      "path": "JetBrainsMono-Medium.ttf",
+      "bytes": 273860
+    },
+    {
+      "path": "JetBrainsMono-BoldItalic.ttf",
+      "bytes": 279832
     }
   ],
   "catalog_before_bytes": 33785032,
@@ -155,9 +231,16 @@
     "xmark-16"
   ],
   "retained_packages": [
-    "MathJaxSwift_MathJaxSwift.bundle",
-    "RaycastWeb_RaycastWeb.bundle",
-    "raycast-grdb_GRDB.bundle",
-    "raycast-syntax_RaycastSyntax.bundle"
+    "RaycastWeb_RaycastWeb.bundle"
+  ],
+  "removed_frameworks": [
+    {
+      "path": "SoulverCore.framework",
+      "bytes": 5245153
+    },
+    {
+      "path": "SplineRuntime.framework",
+      "bytes": 8453821
+    }
   ]
 }
