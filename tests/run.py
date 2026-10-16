@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Run credential persistence and fail-closed recovery tests in temporary folders."""
 from pathlib import Path
+import argparse
 import json
 import subprocess
 import tempfile
@@ -9,6 +10,11 @@ ROOT = Path(__file__).resolve().parent.parent
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--app', type=Path, help='Also load-test this built application core')
+    args = parser.parse_args()
+    if args.app and not (args.app / 'Contents/MacOS/NotesCore').is_file():
+        parser.error('--app must point to a successfully built RayNote.app')
     results = []
     with tempfile.TemporaryDirectory(prefix='native-notes-credential-tests-') as folder:
         folder = Path(folder)
@@ -44,6 +50,11 @@ def main():
         run(missing, 'reject')
         assert not (missing / 'PrivateCredentials.plist').exists()
         results.append({'test': 'missing keys beside an existing database are rejected', 'passed': True})
+        if args.app:
+            loader = folder / 'native-load-probe'
+            subprocess.run(['clang', str(ROOT / 'tests/native_load_probe.c'), '-lobjc', '-o', str(loader)], check=True)
+            subprocess.run([str(loader), str((args.app / 'Contents/MacOS/NotesCore').resolve())], check=True, stdout=subprocess.DEVNULL)
+            results.append({'test': 'core and Notes class load without removed frameworks', 'passed': True})
     print(json.dumps(results, indent=2))
 
 

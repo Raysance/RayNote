@@ -21,6 +21,12 @@ static Class nativeCreateNotesApplicationClass(Class original) {
 }
 static void nativeIgnoreNotification(id self,SEL cmd,id notification) {}
 static void nativeShowNotes(void) {
+ // Keep the floating note visible when the user switches desktop Spaces.
+ NSWindowCollectionBehavior behavior=nativeNotesWindow.collectionBehavior;
+ behavior&=~NSWindowCollectionBehaviorMoveToActiveSpace;
+ behavior|=NSWindowCollectionBehaviorCanJoinAllSpaces;
+ nativeNotesWindow.collectionBehavior=behavior;
+ printf("NATIVE NOTES SPACES collectionBehavior=%lu\n",(unsigned long)nativeNotesWindow.collectionBehavior);
  [nativeNotesWindow makeKeyAndOrderFront:nil];
  [NSApp activateIgnoringOtherApps:YES];
 }

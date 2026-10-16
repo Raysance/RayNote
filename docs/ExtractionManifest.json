@@ -1,7 +1,7 @@
 {
   "source_version": "1.104.31",
   "source_sha256": "c8ff6219fa4122ca35c646fa23638a219c69abcc6d2db81bf6931a92cbec1e95",
-  "module_sha256": "5384b2998254b9922703443994b619b74ecf7dafbe8ccea8f9fc0379859732e1",
+  "module_sha256": "c81d933ba6758f8cb45ddf6167a30709f7f7abd14bba08612e30ef119c2ed36f",
   "load_command_changes": [
     {
       "command": "0x19",
@@ -86,5 +86,22 @@
   ],
   "credentials": "Private local credential file (0600) holding generated database/cache keys; not system-Keychain protected",
   "network": "Denied by per-process sandbox",
-  "ui": "Original RaycastNotesWindow and RaycastNotesViewController, original bundled web editor"
+  "ui": "Original RaycastNotesWindow and RaycastNotesViewController, original bundled web editor",
+  "framework_isolation": {
+    "libraries": [
+      {
+        "path": "@rpath/SplineRuntime.framework/Versions/A/SplineRuntime",
+        "ordinal": 4,
+        "weak_imports": 7
+      },
+      {
+        "path": "@rpath/SoulverCore.framework/Versions/A/SoulverCore",
+        "ordinal": 5,
+        "weak_imports": 448
+      }
+    ],
+    "total_imports": 6864,
+    "isolated_imports": 455,
+    "method": "Keep original ordinals; mark only these libraries and imports optional"
+  }
 }
