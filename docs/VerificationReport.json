@@ -87,20 +87,26 @@
     "chinese_editing_and_find_1_of_1": true,
     "original_format_menu_glyphs": true,
     "markdown_export_menu_opens": true,
-    "literal_brand_words_in_note_body_preserved": true
+    "literal_brand_words_in_note_body_preserved": true,
+    "markdown_export_to_file": true,
+    "normal_quit_and_reopen_restores_chinese_and_bold_format": true,
+    "menu_bar_toggle_off_on_restored_to_original_on_state": true
   },
-  "ui_checks_not_repeated_in_0_2": [
-    "Markdown export to a file",
-    "Quit and reopen content recovery",
-    "Menu-bar toggle"
-  ],
-  "ui_verification_interruption": "Mac locked during export UI verification; no attempt was made to bypass the lock.",
-  "implementation_note": "Final package adds three retained glyphs to the UI-tested build; host __text and native core __text are identical. Build UUIDs/signatures may differ.",
+  "ui_checks_not_repeated_in_0_2": [],
+  "implementation_note": "The published final application was used for export-to-file, normal quit/reopen recovery, and menu-bar toggle verification. No application binary changes were needed.",
   "limits": [
     "Runtime class names and internal package/data identifiers remain unchanged where required.",
     "Statically linked original core and its two direct non-system framework dependencies are retained.",
     "Only the local arm64 macOS 27.0.1 environment was tested; signature is ad-hoc.",
     "Local credential file remains weaker than macOS Keychain protection."
   ],
-  "existing_credential_records_unchanged": true
+  "existing_credential_records_unchanged": true,
+  "post_release_verification_at": "2026-10-16T08:44:35.561791+00:00",
+  "markdown_export": {
+    "file": "RayNote-0.2-Export-Verification.md",
+    "bytes": 125,
+    "sha256": "2eb9ef25c179c4dd57acf1e3466d5ba3a8370a21d7aacb949003c5dd6083532e",
+    "content_verified": true
+  },
+  "earlier_lock_interruption_resolved": true
 }
