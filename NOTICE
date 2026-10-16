@@ -1,0 +1,13 @@
+Component attribution and license scope
+
+The MIT LICENSE in this repository applies to the authored host, extraction and
+verification tools. It does not grant rights to third-party vendor components.
+
+The build consumes native Raycast 1.104.31 components, frameworks and resources
+from a local installation. Those components retain their original ownership and
+license terms. They are not included as source files in this Git repository.
+The compiled application includes original vendor components and is not covered
+in its entirety by this repository's MIT license.
+
+This project is not affiliated with or endorsed by Raycast Technologies Ltd.
+Raycast and Raycast Notes are trademarks of their respective owner.

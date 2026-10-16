@@ -3,3 +3,15 @@
 dist/
 outputs/
 .DS_Store
+__pycache__/
+*.py[cod]
+*.o
+*.app/
+*.zip
+*.sqlite*
+*.db
+*.log
+PrivateCredentials.plist*
+SandboxData/
+.env
+.env.*

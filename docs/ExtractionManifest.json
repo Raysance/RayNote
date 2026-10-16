@@ -1,0 +1,90 @@
+{
+  "source_version": "1.104.31",
+  "source_sha256": "c8ff6219fa4122ca35c646fa23638a219c69abcc6d2db81bf6931a92cbec1e95",
+  "module_sha256": "6320e131bd4608eb8ab81c294b3a9d440e560fe873d5354e857658ec0f87fd28",
+  "load_command_changes": [
+    {
+      "command": "0x19",
+      "segment": "__PAGEZERO"
+    },
+    {
+      "command": "0xe",
+      "segment": ""
+    },
+    {
+      "command": "0x80000028",
+      "segment": ""
+    }
+  ],
+  "notes_patches": [
+    {
+      "address": "0x100a4e1cc",
+      "before": "ab020054",
+      "after": "15000014",
+      "reason": "Notes create action: remove local five-note branch"
+    },
+    {
+      "address": "0x100a4e6f4",
+      "before": "ab020054",
+      "after": "15000014",
+      "reason": "Notes duplicate action: remove local five-note branch"
+    },
+    {
+      "address": "0x100a54da4",
+      "before": "ab020054",
+      "after": "15000014",
+      "reason": "Notes command create: remove local five-note branch"
+    },
+    {
+      "address": "0x100a72f60",
+      "before": "ab020054",
+      "after": "15000014",
+      "reason": "Notes restore: remove local five-note branch"
+    },
+    {
+      "address": "0x100a7bd78",
+      "before": "fa67bba9f85f01a9",
+      "after": "00008052c0035fd6",
+      "reason": "Notes-only over-limit predicate returns false"
+    },
+    {
+      "address": "0x100a6f388",
+      "before": "a8000037",
+      "after": "05000014",
+      "reason": "Use original uncapped Notes list display"
+    },
+    {
+      "address": "0x100a8fb30",
+      "before": "8de5ff54",
+      "after": "2cffff17",
+      "reason": "Original Notes window New Note: bypass local count <= 4 condition"
+    },
+    {
+      "address": "0x100a93d90",
+      "before": "8c010054",
+      "after": "1f2003d5",
+      "reason": "Original Notes window alternate create: remove count > 4 upsell branch"
+    },
+    {
+      "address": "0x100a8ff50",
+      "before": "8a150054",
+      "after": "1f2003d5",
+      "reason": "Original Notes window: remove local count >= 5 upsell branch"
+    },
+    {
+      "address": "0x100a7dad8",
+      "before": "fc6fbaa9fa6701a9",
+      "after": "00008052c0035fd6",
+      "reason": "Notes-only read-only predicate returns false"
+    },
+    {
+      "address": "0x100a646c4",
+      "before": "f657bda9f44f01a9fd7b02a9",
+      "after": "700901f0102242f900021fd6",
+      "reason": "Notes settings closure opens original Notes preferences form in independent host"
+    }
+  ],
+  "credentials": "Private local credential file (0600) holding generated database/cache keys; not system-Keychain protected",
+  "network": "Denied by per-process sandbox",
+  "ui": "Original RaycastNotesWindow and RaycastNotesViewController, original bundled web editor"
+}

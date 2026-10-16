@@ -1,0 +1,111 @@
+{
+  "product": "Native Notes",
+  "version": "0.1",
+  "created_at": "2026-10-16T08:04:10.146938+00:00",
+  "tested_platform": {
+    "architecture": "arm64",
+    "macOS": "27.0.1",
+    "build": "26A434"
+  },
+  "provenance": {
+    "passed": true,
+    "original_sha256": "c8ff6219fa4122ca35c646fa23638a219c69abcc6d2db81bf6931a92cbec1e95",
+    "module_sha256": "6320e131bd4608eb8ab81c294b3a9d440e560fe873d5354e857658ec0f87fd28",
+    "native_text_bytes_verified": 39207872,
+    "documented_patches": 11,
+    "native_text_matches_original_except_documented_patches": true,
+    "original_editor_assets": [
+      {
+        "path": "css/index.css",
+        "sha256": "738f4088de1e5ea1a7ba400dcde58b2a6c379eb149d5fc62c14add8724ad9f45"
+      },
+      {
+        "path": "fonts/InterVariable-Italic.woff2",
+        "sha256": "0470791f15efd2987bdb50b24027c3f584a2cf9b7b63fbf86012c5f2e9abcc05"
+      },
+      {
+        "path": "fonts/InterVariable.woff2",
+        "sha256": "8af7bd5b545567adffb3dfceb5bedb353a522d7bf1b3a2b8af7b6064156babc0"
+      },
+      {
+        "path": "fonts/JetBrainsMono-Italic.woff2",
+        "sha256": "76a805b6ea613ce2e3973f1bac6fa29db23116b2881390b59247d22890844ecc"
+      },
+      {
+        "path": "fonts/JetBrainsMono.woff2",
+        "sha256": "31ec365b93e4bad6f202ce23352a56d01ca4462b2afc782ed2cf6fa42ca9ac0e"
+      },
+      {
+        "path": "index.html",
+        "sha256": "d60687603e5fbf8063d9aacc73f225f765b2352faba12c1e4a171984ce7b881c"
+      },
+      {
+        "path": "js/index.js",
+        "sha256": "f75ea6798129a56a01f8115ba323acd6c3ef59d45a38a388ea074a614c36ee2b"
+      }
+    ],
+    "ad_hoc_signature_verified": true
+  },
+  "credential_tests": [
+    {
+      "test": "generated local key is persisted with 0600 permissions",
+      "passed": true
+    },
+    {
+      "test": "key is readable after a separate process restart",
+      "passed": true
+    },
+    {
+      "test": "corrupt key store is rejected without overwrite",
+      "passed": true
+    },
+    {
+      "test": "missing keys beside an existing database are rejected",
+      "passed": true
+    }
+  ],
+  "runtime": {
+    "core_loaded_from_extracted_app": true,
+    "frameworks_loaded_from_extracted_app": 2,
+    "loaded_files_under_original_app": [],
+    "private_data_directory_mode": "0700",
+    "local_keyfile_mode": "0600",
+    "database_header_is_not_plain_sqlite": true,
+    "ui_checks_final_build": {
+      "original_editor_restored_chinese_and_rapid_quit_marker": true,
+      "original_browse_list_shows_eight_notes": true,
+      "original_settings_controls_open": true
+    },
+    "earlier_ui_checks": {
+      "create_and_edit_more_than_five_notes_including_oldest": true,
+      "find_chinese_text": true,
+      "original_markdown_export": true,
+      "original_formatting_toolbar": true,
+      "original_menu_bar_toggle_and_escape_setting": true
+    }
+  },
+  "limits": [
+    "Original Swift source was not recovered; authored source is bootstrap/patcher/verification code.",
+    "Other statically linked original code remains in RaycastCore; only Notes entry paths are bootstrapped.",
+    "Original user notes were not imported; eight local test notes were created.",
+    "Cloud sync and AI are unavailable; application process network access is denied.",
+    "Global launcher shortcuts, Quicklinks and deep-link integrations are not fully ported or tested.",
+    "Generated DB/cache keys are stored in a 0600 local file, weaker than macOS Keychain protection.",
+    "Only the local ARM64 macOS 27.0.1 environment was tested; signature is ad-hoc, without notarization."
+  ],
+  "markdown_export": {
+    "file": "Native-Notes-Export-Verification.md",
+    "bytes": 113,
+    "sha256": "e7ab55842cb22bb4e7ede76af1431c42106e00dae8be92b0f5e8034c1da0d4cc",
+    "content_verified": true
+  },
+  "original_process_independence_test": {
+    "state_during_test": "T",
+    "state_after_successful_native_edit": "T",
+    "state_after_restore": "S",
+    "verified_native_actions": [
+      "created note with original RaycastNotesWindow",
+      "edited original web editor while original process state was T"
+    ]
+  }
+}

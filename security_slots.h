@@ -1,0 +1,4 @@
+#define NATIVE_SLOT_SecItemAdd 0x102b8adb8ULL
+#define NATIVE_SLOT_SecItemCopyMatching 0x102b8adc0ULL
+#define NATIVE_SLOT_SecItemDelete 0x102b8adc8ULL
+#define NATIVE_SLOT_SecItemUpdate 0x102b8add0ULL
