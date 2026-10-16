@@ -21,14 +21,14 @@ c8ff6219fa4122ca35c646fa23638a219c69abcc6d2db81bf6931a92cbec1e95
 ./scripts/build-app.sh
 ```
 
-默认输出到 `dist/Native Notes.app`。目标目录必须不存在，脚本不会覆盖已有应用。
+默认输出到 `dist/RayNote.app`。目标目录必须不存在，脚本不会覆盖已有应用。构建过程使用系统 `assetutil` 裁剪资源库，并通过 Swift/AppKit 和 `iconutil` 生成应用图标。
 
 也可以指定输入和输出：
 
 ```sh
 python3 extract.py \
   --source /Applications/Raycast.app \
-  --output "/另一个目录/Native Notes.app"
+  --output "/另一个目录/RayNote.app"
 ```
 
 构建产物包含运行所需模块和资源，运行时不要求 Raycast 处于运行状态。应用使用本地临时签名，没有 Apple 公证。
@@ -43,9 +43,11 @@ python3 tests/run.py
 使用自定义输出目录时：
 
 ```sh
-python3 verify.py --app "/另一个目录/Native Notes.app"
+python3 verify.py --app "/另一个目录/RayNote.app"
 ```
 
 `verify.py` 检查原始文件和模块哈希、记录的指令修改、其余原生代码的一致性、原版编辑器资源的一致性，以及应用签名。应用内的 `Contents/Resources/ExtractionManifest.json` 记录每一处修改的地址、字节和用途。
 
-`tests/run.py` 在临时目录使用测试数据，检查密钥文件权限、跨进程恢复、损坏文件拒绝和已有数据库缺失密钥拒绝。测试不读取用户的笔记或真实密钥。
+`tests/run.py` 在临时目录使用测试数据，检查密钥文件权限、跨进程恢复、改名后沿用旧密钥、损坏文件拒绝和已有数据库缺失密钥拒绝。测试不读取用户的笔记或真实密钥。
+
+`ResourceManifest.json` 记录资源裁剪前后的大小、删除项、保留的资源包和图标。两个被核心直接链接的框架保留，不能直接删除。内部类名、包标识和原版编辑器资源路径保留，界面显示名称由宿主适配为 RayNote。

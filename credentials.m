@@ -17,7 +17,14 @@ static NSString *nativeCredentialRoot(void) {
  return [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Application Support/NativeNotesExtracted"];
 #endif
 }
-static NSString *nativeCredentialService(void){return NSBundle.mainBundle.infoDictionary[@"CFBundleName"] ?: @"Native Notes";}
+// Stable storage namespace across the Native Notes -> RayNote display rename.
+static NSString *nativeCredentialService(void){return @"Native Notes";}
+static NSDictionary *nativeNormalizeCredentialQuery(NSDictionary *query){
+ if([query[(__bridge id)kSecAttrService] isEqual:@"RayNote"]){
+  NSMutableDictionary *copy=[query mutableCopy];copy[(__bridge id)kSecAttrService]=nativeCredentialService();return copy;
+ }
+ return query;
+}
 
 static void nativeInitializeCredentials(void) {
  static dispatch_once_t token;dispatch_once(&token,^{
@@ -88,7 +95,7 @@ static id nativeCredentialResult(NSDictionary *item,NSDictionary *query) {
  return nil;
 }
 OSStatus nativeLocalSecItemCopyMatching(CFDictionaryRef raw,CFTypeRef *output) {
- nativeInitializeCredentials();NSDictionary *query=(__bridge NSDictionary*)raw;if(output)*output=NULL;if(!nativeAllowedCredential(query))return errSecItemNotFound;
+ nativeInitializeCredentials();NSDictionary *query=nativeNormalizeCredentialQuery((__bridge NSDictionary*)raw);if(output)*output=NULL;if(!nativeAllowedCredential(query))return errSecItemNotFound;
  @synchronized(nativeCredentialsLock){
   NSMutableArray *found=[NSMutableArray array];for(NSDictionary *item in nativeCredentials)if(nativeCredentialMatches(item,query))[found addObject:item];
 
@@ -100,7 +107,7 @@ OSStatus nativeLocalSecItemCopyMatching(CFDictionaryRef raw,CFTypeRef *output) {
  }
 }
 OSStatus nativeLocalSecItemAdd(CFDictionaryRef raw,CFTypeRef *output) {
- nativeInitializeCredentials();NSDictionary *query=(__bridge NSDictionary*)raw;if(output)*output=NULL;if(!nativeAllowedCredential(query))return errSecItemNotFound;
+ nativeInitializeCredentials();NSDictionary *query=nativeNormalizeCredentialQuery((__bridge NSDictionary*)raw);if(output)*output=NULL;if(!nativeAllowedCredential(query))return errSecItemNotFound;
  @synchronized(nativeCredentialsLock){
   for(NSDictionary *item in nativeCredentials)if(nativeCredentialMatches(item,query))return errSecDuplicateItem;
   NSMutableDictionary *item=nativeCredentialAttributes(query);[nativeCredentials addObject:item];
@@ -110,11 +117,11 @@ OSStatus nativeLocalSecItemAdd(CFDictionaryRef raw,CFTypeRef *output) {
  }
 }
 OSStatus nativeLocalSecItemUpdate(CFDictionaryRef raw,CFDictionaryRef updates) {
- nativeInitializeCredentials();NSDictionary *query=(__bridge NSDictionary*)raw;if(!nativeAllowedCredential(query))return errSecParam;
+ nativeInitializeCredentials();NSDictionary *query=nativeNormalizeCredentialQuery((__bridge NSDictionary*)raw);if(!nativeAllowedCredential(query))return errSecParam;
  @synchronized(nativeCredentialsLock){BOOL found=NO;for(NSMutableDictionary *item in nativeCredentials)if(nativeCredentialMatches(item,query)){[item addEntriesFromDictionary:nativeCredentialAttributes((__bridge NSDictionary*)updates)];found=YES;}if(!found)return errSecItemNotFound;return nativeSaveCredentials()?errSecSuccess:errSecIO;}
 }
 OSStatus nativeLocalSecItemDelete(CFDictionaryRef raw) {
- nativeInitializeCredentials();NSDictionary *query=(__bridge NSDictionary*)raw;if(!nativeAllowedCredential(query))return errSecParam;
+ nativeInitializeCredentials();NSDictionary *query=nativeNormalizeCredentialQuery((__bridge NSDictionary*)raw);if(!nativeAllowedCredential(query))return errSecParam;
  @synchronized(nativeCredentialsLock){NSIndexSet *indexes=[nativeCredentials indexesOfObjectsPassingTest:^BOOL(id item,NSUInteger idx,BOOL*stop){return nativeCredentialMatches(item,query);}];if(!indexes.count)return errSecItemNotFound;[nativeCredentials removeObjectsAtIndexes:indexes];return nativeSaveCredentials()?errSecSuccess:errSecIO;}
 }
 

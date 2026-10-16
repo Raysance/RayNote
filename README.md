@@ -4,7 +4,7 @@
 
 ## 开始使用
 
-从 [Releases](https://github.com/Raysance/RayNote/releases) 下载应用，解压后将 `Native Notes.app` 拖入“应用程序”文件夹，打开即可写作。
+从 [Releases](https://github.com/Raysance/RayNote/releases/latest) 下载应用，解压后将 `RayNote.app` 拖入“应用程序”文件夹，打开即可写作。
 
 ## 编辑与整理
 

@@ -44,9 +44,9 @@ static Class nativeCreateNotesDelegateClass(Class original) {
 static void nativeCreateStandardMenu(void) {
  NSMenu *menu=[NSMenu new];
  NSMenuItem *app=[NSMenuItem new];app.submenu=[NSMenu new];[menu addItem:app];
- NSMenuItem *settings=[app.submenu addItemWithTitle:@"Notes Settings…" action:sel_registerName("showIndependentNotesSettings:") keyEquivalent:@","];settings.target=nativeSettingsMenuTarget;
+ NSMenuItem *settings=[app.submenu addItemWithTitle:@"RayNote Settings…" action:sel_registerName("showIndependentNotesSettings:") keyEquivalent:@","];settings.target=nativeSettingsMenuTarget;
  [app.submenu addItem:NSMenuItem.separatorItem];
- [app.submenu addItemWithTitle:@"Quit Native Notes" action:@selector(terminate:) keyEquivalent:@"q"];
+ [app.submenu addItemWithTitle:@"Quit RayNote" action:@selector(terminate:) keyEquivalent:@"q"];
  NSMenuItem *edit=[NSMenuItem new];edit.title=@"Edit";edit.submenu=[[NSMenu alloc]initWithTitle:@"Edit"];[menu addItem:edit];
  for(NSArray *entry in @[@[@"Undo",@"undo:",@"z"],@[@"Cut",@"cut:",@"x"],@[@"Copy",@"copy:",@"c"],@[@"Paste",@"paste:",@"v"],@[@"Select All",@"selectAll:",@"a"]]){
   [edit.submenu addItemWithTitle:entry[0] action:NSSelectorFromString(entry[1]) keyEquivalent:entry[2]];

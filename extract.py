@@ -4,6 +4,7 @@ The original application is read only. No decompiled Swift source is claimed.
 """
 from pathlib import Path
 import argparse,hashlib,json,plistlib,shutil,struct,subprocess,tempfile
+from prune_resources import prune
 EXPECTED='c8ff6219fa4122ca35c646fa23638a219c69abcc6d2db81bf6931a92cbec1e95'
 ROOT=Path(__file__).resolve().parent
 
@@ -12,7 +13,7 @@ def digest(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 def main():
  parser=argparse.ArgumentParser(description=__doc__)
  parser.add_argument('--source',type=Path,default=Path('/Applications/Raycast.app'))
- parser.add_argument('--output',type=Path,default=ROOT/'dist'/'Native Notes.app')
+ parser.add_argument('--output',type=Path,default=ROOT/'dist'/'RayNote.app')
  args=parser.parse_args();source=args.source.resolve();app=args.output.resolve()
  original=source/'Contents/MacOS/Raycast'
  if digest(original)!=EXPECTED:raise SystemExit('Unsupported Raycast binary. Expected the locally inspected ARM64 1.104.31 build; refusing address patches.')
@@ -21,7 +22,8 @@ def main():
  contents=app/'Contents';macos=contents/'MacOS';macos.mkdir(parents=True)
  for name in ['Resources','Frameworks']:
   shutil.copytree(source/'Contents'/name,contents/name,symlinks=True)
- module=macos/'RaycastCore';shutil.copy2(original,module)
+ resource_report=prune(contents/'Resources')
+ module=macos/'NotesCore';shutil.copy2(original,module)
  run('codesign','--remove-signature',module)
  b=bytearray(module.read_bytes());header=list(struct.unpack_from('<8I',b));old_size=header[5]
  commands=[];o=32;removed=[]
@@ -64,18 +66,22 @@ def main():
  patch(pc,[adrp,ldr,0xd61f0200],'Notes settings closure opens original Notes preferences form in independent host')
  module.write_bytes(b);run('codesign','--force','--sign','-',module)
  old=plistlib.loads((source/'Contents/Info.plist').read_bytes())
- info={k:old[k] for k in ['CFBundleIconFile','LSMinimumSystemVersion','NSHighResolutionCapable'] if k in old}
- info.update(CFBundleIdentifier='local.notes.native-extracted',CFBundleExecutable='NativeNotes',CFBundleName='Native Notes',CFBundleDisplayName='Native Notes',CFBundlePackageType='APPL',CFBundleVersion='1',CFBundleShortVersionString='0.1',LSUIElement=False,NSPrincipalClass='NSApplication',NSHumanReadableCopyright='Local extraction of the installed Raycast Notes module; original components remain owned by their respective authors.')
+ info={k:old[k] for k in ['LSMinimumSystemVersion','NSHighResolutionCapable'] if k in old}
+ info.update(CFBundleIdentifier='local.notes.native-extracted',CFBundleExecutable='RayNote',CFBundleName='RayNote',CFBundleDisplayName='RayNote',CFBundleIconFile='RayNote.icns',CFBundlePackageType='APPL',CFBundleVersion='2',CFBundleShortVersionString='0.2.0',LSUIElement=False,NSPrincipalClass='NSApplication',NSHumanReadableCopyright='Original components retain their respective ownership.')
  (contents/'Info.plist').write_bytes(plistlib.dumps(info));(contents/'PkgInfo').write_bytes(b'APPL????')
  with tempfile.TemporaryDirectory(prefix='native-notes-build-') as tmp:
   tmp=Path(tmp);objects=[]
+  iconset=tmp/'RayNote.iconset'
+  run('swift',ROOT/'scripts/make-icon.swift',iconset)
+  run('iconutil','-c','icns',iconset,'-o',contents/'Resources/RayNote.icns')
   for file in ['native_main.m','credentials.m','swift_bridge.S']:
    out=tmp/(Path(file).stem+'.o');cmd=['clang','-Wno-deprecated-declarations','-I',str(ROOT)]
    if file.endswith('.m'):cmd+=['-fobjc-arc']
    run(*cmd,'-c',ROOT/file,'-o',out);objects.append(out)
-  run('clang',*objects,'-framework','AppKit','-framework','Foundation','-framework','Security','-lsandbox','-Wl,-rpath,@executable_path/../Frameworks','-o',macos/'NativeNotes')
+  run('clang',*objects,'-framework','AppKit','-framework','Foundation','-framework','Security','-lsandbox','-Wl,-rpath,@executable_path/../Frameworks','-o',macos/'RayNote')
  manifest=dict(source_version='1.104.31',source_sha256=EXPECTED,module_sha256=digest(module),load_command_changes=removed,notes_patches=patches,credentials='Private local credential file (0600) holding generated database/cache keys; not system-Keychain protected',network='Denied by per-process sandbox',ui='Original RaycastNotesWindow and RaycastNotesViewController, original bundled web editor')
  (contents/'Resources'/'ExtractionManifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
+ (contents/'Resources'/'ResourceManifest.json').write_text(json.dumps(resource_report,indent=2)+'\n')
  run('codesign','--force','--deep','--sign','-',app)
  run('codesign','--verify','--deep','--strict',app)
  assert digest(original)==EXPECTED,'Original binary changed unexpectedly'

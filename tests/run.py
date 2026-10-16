@@ -27,6 +27,8 @@ def main():
         results.append({'test': 'generated local key is persisted with 0600 permissions', 'passed': True})
         run(normal, 'read')
         results.append({'test': 'key is readable after a separate process restart', 'passed': True})
+        run(normal, 'read-branded')
+        results.append({'test': 'RayNote display rename reuses the existing key without regeneration', 'passed': True})
         corrupt = folder / 'corrupt'
         corrupt.mkdir()
         keyfile = corrupt / 'PrivateCredentials.plist'

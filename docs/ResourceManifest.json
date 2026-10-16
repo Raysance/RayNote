@@ -1,0 +1,163 @@
+{
+  "before_bytes": 62364021,
+  "after_bytes": 15637691,
+  "removed_resources": [
+    {
+      "path": "RaycastNodeExtensions_RaycastNodeExtensions.bundle",
+      "bytes": 3608930
+    },
+    {
+      "path": "Starscream_Starscream.bundle",
+      "bytes": 1534
+    },
+    {
+      "path": "symlinks.plist",
+      "bytes": 824
+    },
+    {
+      "path": "whoosh.mp3",
+      "bytes": 6104
+    },
+    {
+      "path": "AppIcon-Release.icns",
+      "bytes": 86911
+    },
+    {
+      "path": "dict-modern-success.aif",
+      "bytes": 164962
+    },
+    {
+      "path": "ai-providers.template.yaml",
+      "bytes": 3718
+    },
+    {
+      "path": "dict-modern-failure.aif",
+      "bytes": 93314
+    },
+    {
+      "path": "InternetAccessPolicy.plist",
+      "bytes": 2871
+    },
+    {
+      "path": "RaycastOnboarding_RaycastOnboarding.bundle",
+      "bytes": 9068822
+    },
+    {
+      "path": "RaycastDictation_RaycastDictation.bundle",
+      "bytes": 238528
+    },
+    {
+      "path": "dict-cyber-start.aif",
+      "bytes": 31138
+    },
+    {
+      "path": "Base.lproj",
+      "bytes": 13187
+    },
+    {
+      "path": "PostHog_PostHog.bundle",
+      "bytes": 2407
+    },
+    {
+      "path": "dict-cyber-failure.aif",
+      "bytes": 52616
+    },
+    {
+      "path": "dict-retro-failure.aif",
+      "bytes": 51030
+    },
+    {
+      "path": "dict-retro-start.aif",
+      "bytes": 47730
+    },
+    {
+      "path": "dict-cyber-success.aif",
+      "bytes": 226112
+    },
+    {
+      "path": "dict-retro-success.aif",
+      "bytes": 200270
+    },
+    {
+      "path": "AppleGaramond-Light.ttf",
+      "bytes": 47824
+    },
+    {
+      "path": "dict-modern-start.aif",
+      "bytes": 67786
+    }
+  ],
+  "catalog_before_bytes": 33785032,
+  "catalog_after_bytes": 1075320,
+  "retained_asset_names": [
+    "app-window-16",
+    "app-window-list-16",
+    "arrow-counter-clockwise-16",
+    "arrow-down-16",
+    "arrow-left-16",
+    "arrow-right-16",
+    "arrow-up-16",
+    "arrows-expand-height-16",
+    "blank-document-16",
+    "bold-16",
+    "brand-markdown-16",
+    "bullet-points-16",
+    "check-16",
+    "check-circle-16",
+    "check-list-16",
+    "checkmark-16",
+    "chevron-down-16",
+    "chevron-down-small-16",
+    "chevron-left-16",
+    "chevron-right-16",
+    "chevron-up-16",
+    "clear-formatting-16",
+    "clock-16",
+    "code-16",
+    "code-block-16",
+    "cog-16",
+    "copy-clipboard-16",
+    "duplicate-16",
+    "ellipsis-16",
+    "floating-notes-export-16",
+    "floating-notes-extension-16",
+    "floating-notes-heading-dropdown-16",
+    "floating-notes-system-theme",
+    "heading-16",
+    "italics-16",
+    "keyboard-16",
+    "link-16",
+    "magnifying-glass-16",
+    "minus-16",
+    "minus-circle-16",
+    "notes-status-item-16",
+    "number-list-16",
+    "paragraph-16",
+    "pin-16",
+    "pin-disabled-16",
+    "plus-16",
+    "plus-circle-16",
+    "question-mark-circle-16",
+    "quote-block-16",
+    "raycast-notes-16",
+    "raycast-notes-create-16",
+    "raycast-notes-save-16",
+    "raycast-notes-search-16",
+    "strike-through-16",
+    "text-16",
+    "trash-16",
+    "underline-16",
+    "undo-16",
+    "upload-16",
+    "video-disabled-16",
+    "warning-16",
+    "x-mark-circle-16",
+    "xmark-16"
+  ],
+  "retained_packages": [
+    "MathJaxSwift_MathJaxSwift.bundle",
+    "RaycastWeb_RaycastWeb.bundle",
+    "raycast-grdb_GRDB.bundle",
+    "raycast-syntax_RaycastSyntax.bundle"
+  ]
+}

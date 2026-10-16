@@ -13,7 +13,7 @@ static void nativeShowSettings(void) {
   if(!form||!items){fprintf(stderr,"Original Notes preferences could not be initialized\n");return;}
   form.view.frame=NSMakeRect(0,0,620,480);
   nativeSettingsWindow=[[NSWindow alloc]initWithContentRect:NSMakeRect(0,0,620,480) styleMask:NSWindowStyleMaskTitled|NSWindowStyleMaskClosable|NSWindowStyleMaskResizable backing:NSBackingStoreBuffered defer:NO];
-  nativeSettingsWindow.title=@"Notes Settings";
+  nativeSettingsWindow.title=@"RayNote Settings";
   nativeSettingsWindow.level=nativeNotesWindow.level+1;
   nativeSettingsWindow.releasedWhenClosed=NO;
   NSViewController *container=[NSViewController new];

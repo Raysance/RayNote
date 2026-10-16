@@ -11,6 +11,7 @@
 #include <sys/ucontext.h>
 #include <sandbox.h>
 #include "gui_support.h"
+#include "branding.h"
 static NSString *nativeStorageRoot;
 extern void nativeInstallCredentialRebindings(intptr_t);
 extern BOOL nativePreparePrivateCredentials(void);
@@ -78,13 +79,13 @@ int main(int argc,char **argv){
    fprintf(stderr,"Cannot persist or recover private local database credentials\n");
    NSAlert *alert=[NSAlert new];alert.messageText=@"无法安全打开本地笔记";alert.informativeText=[@"数据库密钥文件缺失、损坏或不可写。为避免覆盖旧数据，应用已停止启动。请恢复整个数据目录的备份：\n" stringByAppendingString:nativeStorageRoot];[alert runModal];return 74;
   }
-  nativeInstallPathIsolation();
-  NSString *path=[NSBundle.mainBundle.executablePath.stringByDeletingLastPathComponent stringByAppendingPathComponent:@"RaycastCore"];
+  nativeInstallPathIsolation();nativeInstallBranding();
+  NSString *path=[NSBundle.mainBundle.executablePath.stringByDeletingLastPathComponent stringByAppendingPathComponent:@"NotesCore"];
   printf("LOAD %s\n",path.UTF8String);
   void *h=dlopen(path.fileSystemRepresentation,RTLD_NOW|RTLD_LOCAL);
   if(!h){fprintf(stderr,"DLOPEN FAILED: %s\n",dlerror());return 2;}
   printf("DLOPEN SUCCEEDED %p\n",h);
-  for(uint32_t i=0;i<_dyld_image_count();i++) if(strstr(_dyld_get_image_name(i),"RaycastCore")) {nativeImageSlide=_dyld_get_image_vmaddr_slide(i);printf("IMAGE BASE %p SLIDE %lx\n",_dyld_get_image_header(i),(unsigned long)nativeImageSlide);}
+  for(uint32_t i=0;i<_dyld_image_count();i++) if([[NSString stringWithUTF8String:_dyld_get_image_name(i)] hasSuffix:@"/NotesCore"]) {nativeImageSlide=_dyld_get_image_vmaddr_slide(i);printf("IMAGE BASE %p SLIDE %lx\n",_dyld_get_image_header(i),(unsigned long)nativeImageSlide);}
   struct sigaction sa={0};sa.sa_sigaction=nativeProbeSignalHandler;sa.sa_flags=SA_SIGINFO;
   int signals[]={SIGILL,SIGTRAP,SIGSEGV,SIGBUS,SIGABRT};for(int i=0;i<5;i++)sigaction(signals[i],&sa,NULL);
   nativeInstallCredentialRebindings(nativeImageSlide);
