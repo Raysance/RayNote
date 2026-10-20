@@ -68,7 +68,7 @@ def main():
  module.write_bytes(b);run('codesign','--force','--sign','-',module)
  old=plistlib.loads((source/'Contents/Info.plist').read_bytes())
  info={k:old[k] for k in ['LSMinimumSystemVersion','NSHighResolutionCapable'] if k in old}
- info.update(CFBundleIdentifier='local.notes.native-extracted',CFBundleExecutable='RayNote',CFBundleName='RayNote',CFBundleDisplayName='RayNote',CFBundleIconFile='RayNote.icns',CFBundlePackageType='APPL',CFBundleVersion='3',CFBundleShortVersionString='0.3.0',LSUIElement=False,NSPrincipalClass='NSApplication',NSHumanReadableCopyright='Original components retain their respective ownership.')
+ info.update(CFBundleIdentifier='local.notes.native-extracted',CFBundleExecutable='RayNote',CFBundleName='RayNote',CFBundleDisplayName='RayNote',CFBundleIconFile='RayNote.icns',CFBundlePackageType='APPL',CFBundleVersion='4',CFBundleShortVersionString='0.3.1',LSUIElement=False,NSPrincipalClass='NSApplication',NSHumanReadableCopyright='Original components retain their respective ownership.')
  (contents/'Info.plist').write_bytes(plistlib.dumps(info));(contents/'PkgInfo').write_bytes(b'APPL????')
  with tempfile.TemporaryDirectory(prefix='native-notes-build-') as tmp:
   tmp=Path(tmp);objects=[]

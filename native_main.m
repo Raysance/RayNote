@@ -12,6 +12,7 @@
 #include <sandbox.h>
 #include "gui_support.h"
 #include "branding.h"
+#include "image_resources.h"
 static NSString *nativeStorageRoot;
 extern void nativeInstallCredentialRebindings(intptr_t);
 extern BOOL nativePreparePrivateCredentials(void);
@@ -80,6 +81,7 @@ int main(int argc,char **argv){
    NSAlert *alert=[NSAlert new];alert.messageText=@"无法安全打开本地笔记";alert.informativeText=[@"数据库密钥文件缺失、损坏或不可写。为避免覆盖旧数据，应用已停止启动。请恢复整个数据目录的备份：\n" stringByAppendingString:nativeStorageRoot];[alert runModal];return 74;
   }
   nativeInstallPathIsolation();nativeInstallBranding();
+  if(!nativeLoadSupplementalImages(NSBundle.mainBundle))return 77;
   NSString *path=[NSBundle.mainBundle.executablePath.stringByDeletingLastPathComponent stringByAppendingPathComponent:@"NotesCore"];
   printf("LOAD %s\n",path.UTF8String);
   void *h=dlopen(path.fileSystemRepresentation,RTLD_NOW|RTLD_LOCAL);

@@ -22,6 +22,7 @@
 | `dependency_isolation.py` | 保持库序号，将两个无关框架及其导入标记为可选 |
 | `audit_dependencies.py` | 有明确边界的机器码调用与编辑器资源依赖审计 |
 | `prune_resources.py` | 资源包白名单、笔记图标裁剪与保留项验证 |
+| `image_resources.h` | 将补充资源包中的原版图标注册到 NSImage 名称查找 |
 | `scripts/make-icon.swift` | 生成独立的笔记应用图标 |
 | `credentials.m` | 独立生成的数据库和缓存密钥持久化 |
 | `security_slots.h` | 原模块四个 Security 导入槽的地址 |
@@ -38,7 +39,9 @@
 
 0.2 将应用显示名称、主程序和核心文件名改为 RayNote / NotesCore。数据目录和 bundle identifier 保持兼容，凭据适配器将新显示名映射到既有密钥命名空间，避免重新生成密钥。显示名称适配不改写笔记正文，也不批量修改原模块的类名或运行时符号。
 
-0.3 仅保留 Web 编辑器资源包、emoji 数据、63 个笔记及通用操作图标和独立应用图标。编辑器自身包含 Highlight.js 和四个 WOFF2 字体；额外的原生语法高亮包、MathJax 包、GRDB 的隐私资源包和根目录 OTF/TTF 字体已移除。`assetutil` 的保留列表长度存在限制，构建时限制参数长度并逐项验证保留图标，防止静默丢失资源。
+0.3.1 保留 Web 编辑器资源包、emoji 数据、78 个笔记及通用操作图标和独立应用图标。编辑器自身包含 Highlight.js 和四个 WOFF2 字体；额外的原生语法高亮包、MathJax 包、GRDB 的隐私资源包和根目录 OTF/TTF 字体已移除。`assetutil` 的保留列表长度存在限制，主资源库保留 63 项，另将运行追踪确认的 15 项放入 `NotesGlyphs.bundle`。宿主在加载核心前，以原名注册补充图标，供原生控件查找。两个目录均逐项验证名称及原版 rendition 哈希。
+
+实际请求的 Action Panel、置顶和关闭图标分别为 `command-symbol-16`、`tack-16` / `tack-disabled-16` 和 `multiply-16`，不能用近似名称替代。自动测试同时检查资源查找和这四项图标的非透明像素渲染。
 
 宿主应用进程禁止网络访问，并禁止读写原 Raycast 数据目录及写入原应用。云同步和 AI 不可用。
 

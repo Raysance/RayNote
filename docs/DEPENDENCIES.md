@@ -9,7 +9,7 @@
 | MathJax 资源包与根目录字体 | 不在编辑器静态资源闭包内 | 移除，验证富文本、中文、Emoji 和重启恢复 |
 | GRDB 资源包 | 该包仅包含包元数据和 PrivacyInfo.xcprivacy，不包含数据库引擎 | 移除资源包；另用全新 bundle identifier 验证建库、写入和重启，不代表移除静态链接的数据库代码 |
 | SplineRuntime / SoulverCore | 已知 Notes 与启动入口直接调用图未发现这两个框架的引用 | 将 2 个库和 455 个导入标为可选后移除框架；验证核心加载、编辑、搜索、复制、导出、设置和重启 |
-| Assets.car | 保留明确列出的 63 个笔记与通用操作图标 | 保留项逐个核对原版 rendition 哈希，未继续追求每个图标都不可删除 |
+| 图标资源库 | 主资源库 63 项；运行时追踪补齐 15 项，位于 NotesGlyphs.bundle | 共 78 项逐个核对原版 rendition 哈希，并测试 NSImage 查找及 Action Panel、置顶/取消置顶、关闭图标的实际渲染 |
 | 原生 NotesCore | 原始代码和元数据整体编译，地址与原版布局绑定 | 保留；除既有 11 处修改外，39,207,872 字节原生代码与输入一致 |
 
 `audit_dependencies.py` 可复现 [DependencyAudit.json](DependencyAudit.json)：解析 167,612 个函数起点、3,511 个调用桩、54,865 个绑定指针槽；以 1,763 个已知入口函数为根，追踪 6,240 个直接分支可达函数。该范围内目标框架引用为零。

@@ -1,11 +1,10 @@
 {
   "product": "RayNote",
-  "version": "0.3.0",
-  "created_at": "2026-10-16T09:19:00.499841+00:00",
+  "version": "0.3.1",
+  "created_at": "2026-10-20T09:59:23.139805+00:00",
   "tested_platform": {
     "architecture": "arm64",
-    "macOS": "27.0.1",
-    "build": "26A434"
+    "macOS": "27.0.1"
   },
   "provenance": {
     "passed": true,
@@ -46,7 +45,8 @@
     ],
     "ad_hoc_signature_verified": true,
     "display_name": "RayNote",
-    "retained_glyphs_verified": 63,
+    "retained_glyphs_verified": 78,
+    "supplemental_glyphs_verified": 15,
     "retained_glyph_hashes_match_original": true,
     "catalog_bytes_before": 33785032,
     "catalog_bytes_after": 1075320,
@@ -82,77 +82,45 @@
     {
       "test": "core and Notes class load without removed frameworks",
       "passed": true
+    },
+    {
+      "test": "all retained images load; action, pin/unpin and close glyphs render visible pixels",
+      "passed": true
     }
   ],
-  "static_audit": {
-    "report": "DependencyAudit.json",
-    "reachable_functions_by_direct_branches": 6240,
-    "encountered_indirect_calls_or_branches": 6110,
-    "foreign_references_found": 0,
-    "editor_static_files": 7,
-    "whole_program_dependency_proof": false
-  },
-  "package_size": {
-    "app_bytes": 56218283,
-    "previous_zip_bytes": 33633063,
-    "new_zip_bytes": 23598828,
-    "reduction_from_0_2_percent": 29.83,
-    "reduction_from_0_1_percent": 67.81,
-    "sha256": "5cd63794e8e37312a324dc49eba087533c78f704b821c78c381410220eb2cce1"
-  },
-  "runtime_checks": {
-    "removed_frameworks_not_loaded": true,
-    "original_application_not_loaded": true,
-    "final_build_loaded": true,
-    "existing_credential_records_unchanged": true
+  "icon_fix": {
+    "runtime_requested_names": {
+      "action_panel": "command-symbol-16",
+      "pin": "tack-16",
+      "unpin": "tack-disabled-16",
+      "window_close": "multiply-16"
+    },
+    "main_catalog_icons": 63,
+    "supplemental_catalog_icons": 15,
+    "original_images_registered_by_name": true,
+    "diagnostic_image_hooks_in_release": false
   },
   "ui_checks": {
-    "final_build_existing_database_recovery": true,
-    "final_build_rich_text_and_code_highlighting": true,
-    "final_build_notes_settings_opens": true,
-    "output_application_normal_quit_and_reopen_restores_note": true,
-    "output_application_markdown_export_to_file": true,
-    "isolated_fresh_bundle_new_database_write_and_restart": true,
-    "prototype_find_1_of_2": true,
-    "prototype_duplicate_and_browse_notes": true,
-    "prototype_HTML_and_Markdown_export_to_file": true
+    "pin_button_visible_in_notes_list": true,
+    "pin_and_unpin_work_and_original_state_restored": true,
+    "action_panel_button_opens_panel": true,
+    "find_navigation_and_close_icons_visible": true,
+    "find_close_button_works": true
   },
-  "exports": {
-    "RayNote-0.3-Resource-Verification.md": {
-      "bytes": 205,
-      "sha256": "2170201772dbb8b4b112dd471861e4fc1e6962fb7b750e7d056ed7fc74018039"
-    },
-    "RayNote-0.3-Resource-Verification.html": {
-      "bytes": 707,
-      "sha256": "9a5c05e5e7118727a8cab8d8ee654a811c9f9193f1a806b2b1b6142d8ec5ee03"
-    },
-    "RayNote-0.3-Final-Verification.md": {
-      "bytes": 205,
-      "sha256": "2170201772dbb8b4b112dd471861e4fc1e6962fb7b750e7d056ed7fc74018039"
-    }
+  "runtime_checks": {
+    "existing_credential_records_unchanged": true,
+    "removed_frameworks_not_loaded": true,
+    "original_application_not_loaded": true,
+    "core_unchanged_from_0_3": true
   },
-  "notes": [
-    "Prototype export/find/duplicate tests used a manually trimmed 0.2 bundle with the same two framework and import isolation changes. The scripted 0.3 build then passed independent load, provenance, data recovery, settings, formatting and Markdown export checks.",
-    "Fresh-database verification used a separate QA bundle identifier; the final bundle identifier and data namespace remain unchanged.",
-    "Existing credential records are unchanged. No private notes, databases, or credential files are included in source or release assets."
-  ],
+  "package_size": {
+    "app_bytes": 56735614,
+    "zip_bytes": 23960039,
+    "sha256": "086ef72b130670a9278105b3c4494c535f5d99078470048773303bb049271226"
+  },
   "limits": [
-    "Indirect dispatch, callbacks, metadata/vtable edges and computed addresses are not exhaustively modeled; static zero references is not an absolute absence proof.",
-    "The monolithic original core and statically linked unrelated machine code remain.",
-    "The 63 retained UI glyphs are a conservative set, not a proven minimal set.",
-    "Only arm64 macOS 27.0.1 was tested; signing is ad-hoc.",
-    "Local credential-file protection remains weaker than macOS Keychain."
-  ],
-  "desktop_spaces_fix": {
-    "verified_at": "2026-10-20T09:30:42.208867+00:00",
-    "runtime_checks": {
-      "all_desktop_spaces_enabled": true,
-      "move_to_active_space_disabled": true,
-      "collection_behavior": 1,
-      "existing_credential_records_unchanged": true,
-      "core_unchanged": true
-    },
-    "desktop_switching_confirmed_by_user": true,
-    "validation_scope": "Desktop visibility was confirmed by the user on the installed fixed app. Core, editor resources, signature and existing credentials were verified; unrelated UI checks were not repeated for this host-only change."
-  }
+    "Source and image-loading checks cover all 78 retained names; nontransparent rendering is explicitly tested for action, pin/unpin and window-close icons.",
+    "Only the listed UI checks were repeated for this change; all prior functional tests were not rerun.",
+    "The original native core remains monolithic and signing remains ad-hoc."
+  ]
 }

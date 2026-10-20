@@ -66,10 +66,22 @@ def main():
     assert expected_names <= {entry.get('Name') for entry in catalog}
     original_catalog = json.loads(subprocess.check_output([
         'assetutil', '--info', args.source / 'Contents/Resources/Assets.car']))
-    def glyph_records(entries):
+    def glyph_records(entries, names):
         return {(entry['Name'], entry.get('RenditionName'), entry.get('Scale'), entry.get('SHA1Digest'))
-                for entry in entries if entry.get('Name') in expected_names}
-    assert glyph_records(original_catalog) == glyph_records(catalog), 'Retained glyph data changed'
+                for entry in entries if entry.get('Name') in names}
+    assert glyph_records(original_catalog, expected_names) == glyph_records(catalog, expected_names), 'Retained glyph data changed'
+    supplemental_count = 0
+    for extra in resource_manifest['supplemental_catalogs']:
+        bundle = resources / extra['bundle']
+        extra_catalog = bundle / 'Contents/Resources/Assets.car'
+        assert extra_catalog.stat().st_size == extra['catalog_bytes']
+        extra_names = set(extra['retained_asset_names'])
+        bundle_info = plistlib.loads((bundle / 'Contents/Info.plist').read_bytes())
+        assert set(bundle_info['RayNoteIconNames']) == extra_names
+        entries = json.loads(subprocess.check_output(['assetutil', '--info', extra_catalog]))
+        assert extra_names <= {entry.get('Name') for entry in entries}
+        assert glyph_records(original_catalog, extra_names) == glyph_records(entries, extra_names), 'Supplemental glyph data changed'
+        supplemental_count += len(extra_names)
     info = plistlib.loads((args.app / 'Contents/Info.plist').read_bytes())
     assert info['CFBundleName'] == info['CFBundleDisplayName'] == info['CFBundleExecutable'] == 'RayNote'
     assert (resources / 'RayNote.icns').is_file()
@@ -92,7 +104,8 @@ def main():
         'original_editor_assets': assets,
         'ad_hoc_signature_verified': True,
         'display_name': info['CFBundleDisplayName'],
-        'retained_glyphs_verified': len(expected_names),
+        'retained_glyphs_verified': len(resource_manifest['retained_asset_names']) + supplemental_count,
+        'supplemental_glyphs_verified': supplemental_count,
         'retained_glyph_hashes_match_original': True,
         'catalog_bytes_before': resource_manifest['catalog_before_bytes'],
         'catalog_bytes_after': resource_manifest['catalog_after_bytes'],

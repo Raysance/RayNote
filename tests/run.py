@@ -55,6 +55,11 @@ def main():
             subprocess.run(['clang', str(ROOT / 'tests/native_load_probe.c'), '-lobjc', '-o', str(loader)], check=True)
             subprocess.run([str(loader), str((args.app / 'Contents/MacOS/NotesCore').resolve())], check=True, stdout=subprocess.DEVNULL)
             results.append({'test': 'core and Notes class load without removed frameworks', 'passed': True})
+            image_loader = folder / 'image-load-probe'
+            subprocess.run(['clang', '-fobjc-arc', '-I', str(ROOT), str(ROOT / 'tests/image_load_probe.m'),
+                            '-framework', 'AppKit', '-o', str(image_loader)], check=True)
+            subprocess.run([str(image_loader), str(args.app.resolve())], check=True)
+            results.append({'test': 'all retained images load; action, pin/unpin and close glyphs render visible pixels', 'passed': True})
     print(json.dumps(results, indent=2))
 
 

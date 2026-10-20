@@ -1,6 +1,7 @@
 """Keep Notes/editor dependencies and shared UI glyphs, excluding unrelated media."""
 from pathlib import Path
 import json
+import plistlib
 import shutil
 import subprocess
 import tempfile
@@ -16,6 +17,23 @@ heading paragraph clear-formatting chevron-down chevron-up chevron-left chevron-
 chevron-down-small pin pin-disabled check check-circle xmark ellipsis blank-document
 clock arrow-right arrow-left warning bullet-points keyboard undo question-mark-circle
 brand-markdown checkmark x-mark-circle'''.split()
+SUPPLEMENTAL_ASSETS = '''command-symbol-16 tack-16 tack-disabled-16 multiply-16
+eye-16 eye-disabled-16 info-01-16 arrow-left-circle-filled-16
+arrow-right-circle-filled-16 x-mark-circle-filled-16 replace-one-16 replace-16
+back-button-24 toast-indicator-40 no-results-placeholder-400'''.split()
+
+
+def thin_catalog(source, destination, names):
+    # This assetutil build silently truncates a preserve list around 1024 bytes.
+    assert len(','.join(names).encode()) < 1000, 'Split additional icons into another catalog'
+    with tempfile.TemporaryDirectory(prefix='raynote-assets-') as folder:
+        output = Path(folder) / 'Assets.car'
+        subprocess.run(['assetutil', '--preserve-assets-named', ','.join(names),
+                        '--output', output, source], check=True)
+        shutil.copy2(output, destination)
+    retained = json.loads(subprocess.check_output(['assetutil', '--info', destination]))
+    assert set(names) <= {item.get('Name') for item in retained}, 'Asset thinning lost a required glyph'
+    subprocess.run(['assetutil', '--validate-file', destination], check=True)
 
 
 def size(path):
@@ -45,20 +63,20 @@ def prune(source, resources):
     metadata = json.loads(subprocess.check_output(['assetutil', '--info', original_catalog]))
     available = {item.get('Name') for item in metadata}
     names = sorted({name + '-16' for name in GLYPHS} | {'floating-notes-system-theme'})
-    assert set(names) <= available, 'Required Notes glyph missing from source catalog'
-    # This assetutil build silently truncates a preserve list around 1024 bytes.
-    # Stay below that limit and verify every requested name in the resulting CAR.
-    assert len(','.join(names).encode()) < 1000
+    extra_names = sorted(SUPPLEMENTAL_ASSETS)
+    assert (set(names) | set(extra_names)) <= available, 'Required Notes glyph missing from source catalog'
     old_catalog_size = original_catalog.stat().st_size
-    with tempfile.TemporaryDirectory(prefix='raynote-assets-') as folder:
-        output = Path(folder) / 'Assets.car'
-        subprocess.run(['assetutil', '--preserve-assets-named', ','.join(names),
-                        '--output', output, original_catalog], check=True)
-        shutil.copy2(output, catalog)
-    retained = json.loads(subprocess.check_output(['assetutil', '--info', catalog]))
-    actual_names = {item.get('Name') for item in retained}
-    assert set(names) <= actual_names, 'Asset thinning lost a required glyph'
-    subprocess.run(['assetutil', '--validate-file', catalog], check=True)
+    thin_catalog(original_catalog, catalog, names)
+    # Register a second original-asset catalog instead of exceeding assetutil's list limit.
+    bundle = resources / 'NotesGlyphs.bundle'
+    extra_catalog = bundle / 'Contents/Resources/Assets.car'
+    extra_catalog.parent.mkdir(parents=True)
+    thin_catalog(original_catalog, extra_catalog, extra_names)
+    (bundle / 'Contents/Info.plist').write_bytes(plistlib.dumps({
+        'CFBundleIdentifier': 'local.notes.native-extracted.notes-glyphs',
+        'CFBundleName': 'NotesGlyphs', 'CFBundlePackageType': 'BNDL',
+        'RayNoteIconNames': extra_names,
+    }))
     return {
         'before_bytes': before,
         'after_bytes': size(resources),
@@ -67,4 +85,6 @@ def prune(source, resources):
         'catalog_after_bytes': catalog.stat().st_size,
         'retained_asset_names': names,
         'retained_packages': sorted(PACKAGES),
+        'supplemental_catalogs': [{'bundle': bundle.name, 'retained_asset_names': extra_names,
+                                   'catalog_bytes': extra_catalog.stat().st_size}],
     }

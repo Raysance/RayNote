@@ -1,6 +1,6 @@
 {
   "before_bytes": 62364021,
-  "after_bytes": 3331663,
+  "after_bytes": 3847418,
   "removed_resources": [
     {
       "path": "RaycastNodeExtensions_RaycastNodeExtensions.bundle",
@@ -232,6 +232,29 @@
   ],
   "retained_packages": [
     "RaycastWeb_RaycastWeb.bundle"
+  ],
+  "supplemental_catalogs": [
+    {
+      "bundle": "NotesGlyphs.bundle",
+      "retained_asset_names": [
+        "arrow-left-circle-filled-16",
+        "arrow-right-circle-filled-16",
+        "back-button-24",
+        "command-symbol-16",
+        "eye-16",
+        "eye-disabled-16",
+        "info-01-16",
+        "multiply-16",
+        "no-results-placeholder-400",
+        "replace-16",
+        "replace-one-16",
+        "tack-16",
+        "tack-disabled-16",
+        "toast-indicator-40",
+        "x-mark-circle-filled-16"
+      ],
+      "catalog_bytes": 514776
+    }
   ],
   "removed_frameworks": [
     {
